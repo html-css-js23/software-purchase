@@ -47,9 +47,6 @@
         // Add an instance of the card Element into the `card-element` div.
         card.mount('#card-element');
 
-        // Modify this variable to set the amount to charge in the smallest currency unit (e.g., fils)
-        var amount = 200; // 2 AED = 200 fils
-
         // Handle form submission.
         var form = document.getElementById('payment-form');
         form.addEventListener('submit', function(event) {
@@ -62,29 +59,33 @@
                     errorElement.textContent = result.error.message;
                 } else {
                     // Send the token to your server along with the amount.
-                    stripeTokenHandler(result.token, amount);
+                    stripeTokenHandler(result.token);
                 }
             });
         });
 
         // Submit the form with the token ID and amount.
-        function stripeTokenHandler(token, amount) {
-            // Insert the token ID and amount into the form so it gets submitted to the server
-            var form = document.getElementById('payment-form');
-            var hiddenInputToken = document.createElement('input');
-            hiddenInputToken.setAttribute('type', 'hidden');
-            hiddenInputToken.setAttribute('name', 'stripeToken');
-            hiddenInputToken.setAttribute('value', token.id);
-            form.appendChild(hiddenInputToken);
+        function stripeTokenHandler(token) {
+            // Collect the amount to charge (in the smallest currency unit)
+            var amount = 200; // 2 AED = 200 fils
 
-            var hiddenInputAmount = document.createElement('input');
-            hiddenInputAmount.setAttribute('type', 'hidden');
-            hiddenInputAmount.setAttribute('name', 'amount');
-            hiddenInputAmount.setAttribute('value', amount);
-            form.appendChild(hiddenInputAmount);
-
-            // Submit the form
-            form.submit();
+            // Send the token and amount to your server
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/charge');
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onload = function() {
+                var response = JSON.parse(xhr.responseText);
+                if (xhr.status === 200 && response.success) {
+                    // Payment was successful
+                    alert('Payment successful!');
+                    // Optionally, redirect the user or update UI
+                } else {
+                    // Payment failed
+                    alert('Payment failed. Please try again later.');
+                    // Optionally, display an error message to the user
+                }
+            };
+            xhr.send(JSON.stringify({ token: token.id, amount: amount }));
         }
     </script>
 </body>
