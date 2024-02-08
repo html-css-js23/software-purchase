@@ -47,6 +47,9 @@
         // Add an instance of the card Element into the `card-element` div.
         card.mount('#card-element');
 
+        // Modify this variable to set the amount to charge in the smallest currency unit (e.g., fils)
+        var amount = 200; // 2 AED = 200 fils
+
         // Handle form submission.
         var form = document.getElementById('payment-form');
         form.addEventListener('submit', function(event) {
@@ -58,21 +61,27 @@
                     var errorElement = document.getElementById('card-errors');
                     errorElement.textContent = result.error.message;
                 } else {
-                    // Send the token to your server.
-                    stripeTokenHandler(result.token);
+                    // Send the token to your server along with the amount.
+                    stripeTokenHandler(result.token, amount);
                 }
             });
         });
 
-        // Submit the form with the token ID.
-        function stripeTokenHandler(token) {
-            // Insert the token ID into the form so it gets submitted to the server
+        // Submit the form with the token ID and amount.
+        function stripeTokenHandler(token, amount) {
+            // Insert the token ID and amount into the form so it gets submitted to the server
             var form = document.getElementById('payment-form');
-            var hiddenInput = document.createElement('input');
-            hiddenInput.setAttribute('type', 'hidden');
-            hiddenInput.setAttribute('name', 'stripeToken');
-            hiddenInput.setAttribute('value', token.id);
-            form.appendChild(hiddenInput);
+            var hiddenInputToken = document.createElement('input');
+            hiddenInputToken.setAttribute('type', 'hidden');
+            hiddenInputToken.setAttribute('name', 'stripeToken');
+            hiddenInputToken.setAttribute('value', token.id);
+            form.appendChild(hiddenInputToken);
+
+            var hiddenInputAmount = document.createElement('input');
+            hiddenInputAmount.setAttribute('type', 'hidden');
+            hiddenInputAmount.setAttribute('name', 'amount');
+            hiddenInputAmount.setAttribute('value', amount);
+            form.appendChild(hiddenInputAmount);
 
             // Submit the form
             form.submit();
