@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stripe Payment - 1.0.2</title>
+    <title>Stripe Payment - 1.0.3</title>
     <style>
         /* Add your custom CSS styles here */
     </style>
@@ -28,12 +28,15 @@
     <script src="https://js.stripe.com/v3/"></script>
     <script>
         // Create a Stripe client with your live publishable key
+        console.log("Creating a Stripe client...");
         var stripe = Stripe('pk_live_51OhMzVK1KP54UFKNg0c6PhZRwV8jlV6XLc6wFw05ZvGGAOulTKcxJULiMuAAG3EwrFnHvyTiEPJt4TDhGS4yXUGL00LW0Y1eyf');
 
         // Create an instance of Elements.
+        console.log("Creating an instance of Elements...");
         var elements = stripe.elements();
 
         // Custom styling can be passed to options when creating an Element.
+        console.log("Customizing Element style...");
         var style = {
             base: {
                 fontSize: '16px',
@@ -42,9 +45,11 @@
         };
 
         // Create an instance of the card Element.
+        console.log("Creating an instance of the card Element...");
         var card = elements.create('card', {style: style});
 
         // Add an instance of the card Element into the `card-element` div.
+        console.log("Mounting card Element...");
         card.mount('#card-element');
 
         // Handle form submission.
@@ -52,12 +57,15 @@
         form.addEventListener('submit', function(event) {
             event.preventDefault();
 
+            console.log("Form submission intercepted. Creating token...");
             stripe.createToken(card).then(function(result) {
                 if (result.error) {
                     // Inform the user if there was an error.
+                    console.log("Error creating token:", result.error.message);
                     var errorElement = document.getElementById('card-errors');
                     errorElement.textContent = result.error.message;
                 } else {
+                    console.log("Token created successfully:", result.token.id);
                     // Send the token to your server along with the amount.
                     stripeTokenHandler(result.token);
                 }
@@ -68,6 +76,7 @@
         function stripeTokenHandler(token) {
             // Collect the amount to charge (in the smallest currency unit)
             var amount = 200; // 2 AED = 200 fils
+            console.log("Submitting token to server with amount:", amount);
 
             // Send the token and amount to your server
             var xhr = new XMLHttpRequest();
@@ -77,10 +86,12 @@
                 var response = JSON.parse(xhr.responseText);
                 if (xhr.status === 200 && response.success) {
                     // Payment was successful
+                    console.log("Payment successful!");
                     alert('Payment successful!');
                     // Optionally, redirect the user or update UI
                 } else {
                     // Payment failed
+                    console.log("Payment failed:", response.message);
                     alert('Payment failed. Please try again later.');
                     // Optionally, display an error message to the user
                 }
