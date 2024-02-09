@@ -3,59 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AMStore Online 1.1.0B</title>
+    <title>AMStore Online 1.0.9</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-
-        #payment-form {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 300px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: bold;
-        }
-
-        input {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 20px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-
-        #card-errors {
-            color: #ff0000;
-            margin-bottom: 20px;
-        }
-
-        button {
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
+        /* Add your custom CSS styles here */
     </style>
 </head>
 <body>
@@ -119,30 +69,34 @@
                     var errorElement = document.getElementById('card-errors');
                     errorElement.textContent = result.error.message;
                 } else {
-                    // Send the token to your server along with the amount, name, email, and address.
-                    var token = result.token;
-                    var amount = 50; // Example amount
-
-                    axios.post('https://sharp-private-log.glitch.me/charge', {
-                        token: token.id,
-                        amount: amount,
-                        name: token.card.name,
-                        email: token.email,
-                        address: token.card.address_line1
-                    }).then(function(response) {
-                        if (response.data.success) {
-                            alert('Payment successful!');
-                            downloadFile('https://raw.githubusercontent.com/html-css-js23/software-purchase/main/hi.txt');
-                        } else {
-                            alert('Payment failed. Please try again later.');
-                        }
-                    }).catch(function(error) {
-                        console.error('Error charging card:', error);
-                        alert('Payment failed. Please try again later.');
-                    });
+                    // Send the token to your server along with the amount.
+                    stripeTokenHandler(result.token);
                 }
             });
         });
+
+        // Submit the form with the token ID and amount.
+        function stripeTokenHandler(token) {
+            var amount = 50; // Example amount
+
+            axios.post('https://sharp-private-log.glitch.me/charge', {
+                token: token.id,
+                amount: amount,
+                name: token.card.name,
+                email: token.email,
+                address: token.card.address_line1
+            }).then(function(response) {
+                if (response.data.success) {
+                    alert('Payment successful!');
+                    downloadFile('https://raw.githubusercontent.com/html-css-js23/software-purchase/main/hi.txt');
+                } else {
+                    alert('Payment failed. Please try again later.');
+                }
+            }).catch(function(error) {
+                console.error('Error charging card:', error);
+                alert('Payment failed. Please try again later.');
+            });
+        }
 
         // Function to download a file
         function downloadFile(url) {
