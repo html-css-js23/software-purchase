@@ -3,30 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AMShop Online</title>
+    <title>AMStore Online</title>
     <style>
         /* Add your custom CSS styles here */
     </style>
 </head>
 <body>
- <form id="payment-form">
-    <div>
-        <label for="name">Name</label>
-        <input type="text" id="name" placeholder="John Doe" required>
-    </div>
-    <div>
-        <label for="email">Email</label>
-        <input type="email" id="email" placeholder="john@example.com" required>
-    </div>
-    <!-- Existing card element and error display -->
-    <div id="card-element">
-        <!-- A Stripe Element will be inserted here. -->
-    </div>
-    <div id="card-errors" role="alert"></div>
+    <form id="payment-form">
+        <div>
+            <label for="name">Name</label>
+            <input type="text" id="name" placeholder="John Doe" required>
+        </div>
+        <div>
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="john@example.com" required>
+        </div>
+        <!-- Existing card element and error display -->
+        <div id="card-element">
+            <!-- A Stripe Element will be inserted here. -->
+        </div>
+        <div id="card-errors" role="alert"></div>
 
-    <button id="submit">Submit Payment</button>
-</form>
-
+        <button id="submit">Submit Payment</button>
+    </form>
 
     <script src="https://js.stripe.com/v3/"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js"></script> <!-- Add Axios library -->
@@ -80,6 +79,11 @@
         function stripeTokenHandler(token) {
             // Collect the amount to charge (in the smallest currency unit)
             var amount = 50; // 2 AED = 200 fils
+
+            // Get name and email from the form
+            var name = document.getElementById('name').value;
+            var email = document.getElementById('email').value;
+
             console.log("Submitting token to server with amount:", amount);
 
             // Send the token and amount to your server
@@ -101,13 +105,12 @@
                     // Optionally, display an error message to the user
                 }
             };
-            xhr.send(JSON.stringify({ token: token.id, amount: amount }));
+            xhr.send(JSON.stringify({ token: token.id, amount: amount, name: name, email: email }));
         }
 
         // Function to download a file
         function downloadFile(url) {
             // Create a temporary anchor element
-            console.log("Sending to website...")
             var link = document.createElement('a');
             link.href = url;
             link.download = 'hi.txt'; // Set the filename here
