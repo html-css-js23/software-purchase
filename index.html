@@ -9,21 +9,24 @@
     </style>
 </head>
 <body>
-    <form id="payment-form">
-        <div>
-            <label for="card-element">
-                Credit or debit card
-            </label>
-            <div id="card-element">
-                <!-- A Stripe Element will be inserted here. -->
-            </div>
+ <form id="payment-form">
+    <div>
+        <label for="name">Name</label>
+        <input type="text" id="name" placeholder="John Doe" required>
+    </div>
+    <div>
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="john@example.com" required>
+    </div>
+    <!-- Existing card element and error display -->
+    <div id="card-element">
+        <!-- A Stripe Element will be inserted here. -->
+    </div>
+    <div id="card-errors" role="alert"></div>
 
-            <!-- Used to display form errors. -->
-            <div id="card-errors" role="alert"></div>
-        </div>
+    <button id="submit">Submit Payment</button>
+</form>
 
-        <button id="submit">Submit Payment</button>
-    </form>
 
     <script src="https://js.stripe.com/v3/"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js"></script> <!-- Add Axios library -->
