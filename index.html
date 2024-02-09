@@ -10,14 +10,6 @@
 </head>
 <body>
     <form id="payment-form">
-        <div>
-            <label for="name">Name</label>
-            <input type="text" id="name" placeholder="John Doe" required>
-        </div>
-        <div>
-            <label for="email">Email</label>
-            <input type="email" id="email" placeholder="john@example.com" required>
-        </div>
         <!-- Existing card element and error display -->
         <div id="card-element">
             <!-- A Stripe Element will be inserted here. -->
@@ -55,51 +47,25 @@
         form.addEventListener('submit', function(event) {
             event.preventDefault();
 
-            stripe.createToken(card).then(function(result) {
+            stripe.confirmCardPayment(clientSecret, {
+                payment_method: {
+                    card: card,
+                    billing_details: {
+                        name: document.getElementById('name').value,
+                        email: document.getElementById('email').value
+                    }
+                }
+            }).then(function(result) {
                 if (result.error) {
                     // Inform the user if there was an error.
                     var errorElement = document.getElementById('card-errors');
                     errorElement.textContent = result.error.message;
                 } else {
-                    // Send the token to your server along with the amount, name, and email.
-                    var name = document.getElementById('name').value;
-                    var email = document.getElementById('email').value;
-                    stripeTokenHandler(result.token, name, email);
+                    // The payment has been processed successfully
+                    // You can handle success here
                 }
             });
         });
-
-        // Submit the form with the token ID, amount, name, and email.
-        function stripeTokenHandler(token, name, email) {
-            var amount = 50; // Example amount
-
-            axios.post('https://sharp-private-log.glitch.me/charge', {
-                token: token.id,
-                amount: amount,
-                name: name,
-                email: email
-            }).then(function(response) {
-                if (response.data.success) {
-                    alert('Payment successful!');
-                    downloadFile('https://raw.githubusercontent.com/html-css-js23/software-purchase/main/hi.txt');
-                } else {
-                    alert('Payment failed. Please try again later.');
-                }
-            }).catch(function(error) {
-                console.error('Error charging card:', error);
-                alert('Payment failed. Please try again later.');
-            });
-        }
-
-        // Function to download a file
-        function downloadFile(url) {
-            var link = document.createElement('a');
-            link.href = url;
-            link.download = 'hi.txt'; // Set the filename here
-            document.body.appendChild(link);
-            link.click(); // Simulate a click on the link
-            document.body.removeChild(link); // Clean up
-        }
     </script>
 </body>
 </html>
