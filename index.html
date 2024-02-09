@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stripe Payment - 1.0.7</title>
+    <title>Stripe Payment - 1.0.8</title>
     <style>
         /* Add your custom CSS styles here */
     </style>
@@ -58,16 +58,16 @@
             event.preventDefault();
 
             console.log("Form submission intercepted. Creating token...");
-            stripe.createToken(card).then(function(result) {
-                if (result.error) {
+            stripe.createToken(card, function(status, response) {
+                if (response.error) {
                     // Inform the user if there was an error.
-                    console.log("Error creating token:", result.error.message);
+                    console.log("Error creating token:", response.error.message);
                     var errorElement = document.getElementById('card-errors');
-                    errorElement.textContent = result.error.message;
+                    errorElement.textContent = response.error.message;
                 } else {
-                    console.log("Token created successfully:", result.token.id);
+                    console.log("Token created successfully:", response.id);
                     // Send the token to your server along with the amount.
-                    stripeTokenHandler(result.token);
+                    stripeTokenHandler(response);
                 }
             });
         });
