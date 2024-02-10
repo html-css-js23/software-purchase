@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AMStore Online 1.1.1</title>
+    <title>AMStore Online 1.1.1A</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -84,7 +84,78 @@
     <script src="https://js.stripe.com/v3/"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js"></script> <!-- Add Axios library -->
     <script>
-        // JavaScript code here
+        // Create a Stripe client with your live publishable key
+        var stripe = Stripe('pk_live_51OhMzVK1KP54UFKNg0c6PhZRwV8jlV6XLc6wFw05ZvGGAOulTKcxJULiMuAAG3EwrFnHvyTiEPJt4TDhGS4yXUGL00LW0Y1eyf');
+
+        // Create an instance of Elements.
+        var elements = stripe.elements();
+
+        // Custom styling can be passed to options when creating an Element.
+        var style = {
+            base: {
+                fontSize: '16px',
+                color: '#32325d',
+            }
+        };
+
+        // Create an instance of the card Element.
+        var card = elements.create('card', {style: style});
+
+        // Add an instance of the card Element into the `card-element` div.
+        card.mount('#card-element');
+
+        // Handle form submission.
+        var form = document.getElementById('payment-form');
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            stripe.createToken(card).then(function(result) {
+                if (result.error) {
+                    // Inform the user if there was an error.
+                    var errorElement = document.getElementById('card-errors');
+                    errorElement.textContent = result.error.message;
+                } else {
+                    // Send the token to your server along with the amount, name, and email.
+                    var name = document.getElementById('name').value;
+                    var email = document.getElementById('email').value;
+                    var billingAddress = document.getElementById('billing-address').value;
+                    stripeTokenHandler(result.token, name, email, billingAddress);
+                }
+            });
+        });
+
+        // Submit the form with the token ID, amount, name, email, and billing address.
+        function stripeTokenHandler(token, name, email, billingAddress) {
+            var amount = 50; // Example amount
+
+            axios.post('https://sharp-private-log.glitch.me/charge', {
+                token: token.id,
+                amount: amount,
+                name: name,
+                email: email,
+                billingAddress: billingAddress
+            }).then(function(response) {
+                if (response.data.success) {
+                    alert('Payment successful!');
+                    downloadFile('https://raw.githubusercontent.com/html-css-js23/software-purchase/main/hi.txt');
+                } else {
+                    alert('Payment failed. Please try again later.');
+                }
+            }).catch(function(error) {
+                console.error('Error charging card:', error);
+                alert('Payment failed. Please try again later.');
+            });
+        }
+
+        // Function to download a file
+        function downloadFile(url) {
+            var link = document.createElement('a');
+            link.href = url;
+            link.download = 'hi.txt'; // Set the filename here
+            document.body.appendChild(link);
+            link.click(); // Simulate a click on the link
+            document.body.removeChild(link); // Clean up
+        }
     </script>
 </body>
 </html>
