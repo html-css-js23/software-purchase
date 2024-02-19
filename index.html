@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AMStore Online 1.1.0E</title>
+    <title>Games Online 1.1.F</title>
     <style>
         /* Add your custom CSS styles here */
     </style>
@@ -65,6 +65,7 @@
                 name: document.getElementById('name').value,
                 email: document.getElementById('email').value,
                 address_line1: document.getElementById('billing-address').value
+            
                 // Add more address fields if necessary
             }).then(function(result) {
                 if (result.error) {
@@ -84,7 +85,7 @@
 
         // Submit the form with the token ID, name, email, and billing address.
         function stripeTokenHandler(token, name, email, billingAddress) {
-            var amount = 50; // Example amount
+            var amount = 200; // Example amount
 
             axios.post('https://sharp-private-log.glitch.me/charge', {
                 token: token.id,
@@ -94,26 +95,18 @@
                 billingAddress: billingAddress
             }).then(function(response) {
                 if (response.data.success) {
-                    alert('Payment successful!');
-                    downloadFile('https://raw.githubusercontent.com/html-css-js23/software-purchase/main/hi.txt');
+                    alert('Payment successful! Your credit will me added to your account very soon!');
                 } else {
-                    alert('Payment failed. Please try again later.');
+                    alert('Payment failed. Please try again. If this keeps happening, please email us: inquiriesam@shopam.onmicrosoft.com');
                 }
             }).catch(function(error) {
                 console.error('Error charging card:', error);
-                alert('Payment failed. Please try again later.');
+                alert('Payment failed. Please try again. If this keeps happening, please email us: inquiriesam@shopam.onmicrosoft.com');
             });
         }
 
         // Function to download a file
-        function downloadFile(url) {
-            var link = document.createElement('a');
-            link.href = url;
-            link.download = 'hi.txt'; // Set the filename here
-            document.body.appendChild(link);
-            link.click(); // Simulate a click on the link
-            document.body.removeChild(link); // Clean up
-        }
+        
     </script>
 </body>
 </html>
