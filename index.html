@@ -85,7 +85,7 @@
 
         // Submit the form with the token ID, name, email, and billing address.
         function stripeTokenHandler(token, name, email, billingAddress) {
-            var amount = 200; // Example amount
+            var amount = 3500; // Example amount
 
             axios.post('https://sharp-private-log.glitch.me/charge', {
                 token: token.id,
@@ -95,7 +95,7 @@
                 billingAddress: billingAddress
             }).then(function(response) {
                 if (response.data.success) {
-                    alert('Payment successful! Your credit will be added to your account very soon!');
+                    alert('Payment successful! You will be emailed soon.');
                 } else {
                     alert('Payment failed. Please try again. If this keeps happening, please email us: inquiriesam@shopam.onmicrosoft.com');
                 }
